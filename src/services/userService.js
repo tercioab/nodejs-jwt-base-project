@@ -1,6 +1,12 @@
+const { createToken } = require('../auth/jwtFunctions');
 const { User } = require('../models');
 
-const createUser = ({ username, password }) => User.create({ username, password });
+const createUser = async ({ username, password }) => {
+  const user = await User.create({ username, password });
+  const { password: _, ...userWithoutPassword } = user.dataValues;
+const token = createToken(userWithoutPassword);
+  return { user: userWithoutPassword, token };
+};
 
 const getUsers = () => User.findAll();
 
